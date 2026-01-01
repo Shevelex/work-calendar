@@ -1,5 +1,19 @@
 from datetime import datetime, timedelta
 
+def generate_empty_calendar(path: str):
+    lines = [
+        "BEGIN:VCALENDAR",
+        "VERSION:2.0",
+        "PRODID:-//Work Calendar//RU",
+        "CALSCALE:GREGORIAN",
+        "X-WR-CALNAME:Работа",
+        "END:VCALENDAR",
+    ]
+
+    with open(path, "w", encoding="utf-8") as f:
+        f.write("\n".join(lines))
+
+
 def generate_calendar(path: str):
     events = [
         (
