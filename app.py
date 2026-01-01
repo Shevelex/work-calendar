@@ -3,7 +3,7 @@ from fastapi.responses import FileResponse, HTMLResponse
 import shutil
 import os
 
-from calendar_gen import generate_calendar
+from calendar_gen import generate_calendar, generate_empty_calendar
 
 app = FastAPI()
 
@@ -12,6 +12,10 @@ ICS_PATH = os.path.join(DATA_DIR, "calendar.ics")
 UPLOAD_PATH = os.path.join(DATA_DIR, "schedule.png")
 
 os.makedirs(DATA_DIR, exist_ok=True)
+
+# 🔹 Гарантируем, что календарь существует всегда
+if not os.path.exists(ICS_PATH):
+    generate_empty_calendar(ICS_PATH)
 
 
 @app.get("/", response_class=HTMLResponse)
@@ -31,7 +35,6 @@ async def upload(file: UploadFile = File(...)):
     with open(UPLOAD_PATH, "wb") as buffer:
         shutil.copyfileobj(file.file, buffer)
 
-    # пока заглушка — дальше подключим OCR
     generate_calendar(ICS_PATH)
 
     return {"status": "ok", "message": "Календарь обновлён"}
@@ -39,4 +42,8 @@ async def upload(file: UploadFile = File(...)):
 
 @app.get("/calendar.ics")
 def calendar():
-    return FileResponse(ICS_PATH, media_type="text/calendar")
+    return FileResponse(
+        ICS_PATH,
+        media_type="text/calendar",
+        filename="calendar.ics"
+    )
