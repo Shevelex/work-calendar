@@ -4,7 +4,7 @@ import shutil
 import os
 
 from calendar_gen import generate_calendar, generate_empty_calendar
-
+from ocr import extract_text
 app = FastAPI()
 
 DATA_DIR = "data"
