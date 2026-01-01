@@ -47,3 +47,16 @@ def calendar():
         media_type="text/calendar",
         filename="calendar.ics"
     )
+
+@app.post("/ocr-debug")
+async def ocr_debug(file: UploadFile = File(...)):
+    temp_path = os.path.join(DATA_DIR, "ocr_test.png")
+
+    with open(temp_path, "wb") as buffer:
+        shutil.copyfileobj(file.file, buffer)
+
+    lines = extract_text(temp_path)
+
+    return {
+        "lines": lines
+    }
